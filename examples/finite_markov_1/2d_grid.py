@@ -51,4 +51,7 @@ P_matrix[:, walls] = 0
 
 FMRP = FiniteMarkovRewards(flat_states, P_matrix, flat_rewards)
 
-print(FMRP.exp_rewards(1))
+v1 = FMRP.value_function(gamma=.6)
+v2 = FMRP.value_function(gamma=.9)
+print(f"gamma=.6 MEAN = {sum(v1)/len(v1)}")
+print(f"gamma=.9 MEAN = {sum(v2)/len(v2)}")

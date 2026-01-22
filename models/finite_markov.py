@@ -101,29 +101,37 @@ class FiniteMarkovRewards(FiniteMarkovChain):
             return dist @ rewards
 
     # used AI for this function for now
-    def value_function(self, gamma=0.9, rtol=1e-8, maxiter=None, return_dict=False):
+    def value_function(self, gamma=0.99, rtol=1e-8, maxiter=None, return_dict=False):
         """
         Solve (I - gamma P) v = r for the infinite-horizon discounted value function.
-        Assumes rewards are transition-based: rewards[i,j] is reward for i -> j.
-        """
-        if not (0< gamma < 1):
-            raise ValueError("gamma must be in (0, 1)")
 
-        P = csr_matrix(self.transition_matrix)  # sparse is fine even if dense input
+        Assumes rewards are state-based:
+            self.rewards[i] = reward received when in state i
+        """
+        if not (0 <= gamma < 1):
+            raise ValueError("gamma must be in [0, 1) for discounted problems.")
+
+        # Transition matrix
+        P = csr_matrix(self.transition_matrix)
         I = identity(self.n, format="csr")
 
-        # r[i] = E[reward | S_t = i] = sum_j P[i,j] * rewards[i,j]
-        r = np.array([self.exp_rewards(i) for i in range(self.n)], dtype=float)
+        # Reward vector (state-based)
+        r = np.asarray(self.rewards, dtype=float)
+        if r.shape != (self.n,):
+            raise ValueError(f"rewards must be length {self.n}; got shape {r.shape}")
 
+        # Solve linear system
         A = I - gamma * P
         v, info = gmres(A, r, rtol=rtol, maxiter=maxiter)
 
         if info != 0:
-            # info > 0: no convergence within maxiter; info < 0: breakdown
-            raise RuntimeError(f"GMRES failed to converge (info={info}). Try larger maxiter or different solver.")
+            raise RuntimeError(
+                f"GMRES failed to converge (info={info}). "
+                f"Try increasing maxiter, loosening rtol, or using a different solver."
+            )
 
         if return_dict:
-            return {self.states[i]: v[i] for i in range(self.n)}
+            return {self.states[i]: float(v[i]) for i in range(self.n)}
         return v
 
 
