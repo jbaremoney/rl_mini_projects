@@ -56,7 +56,7 @@ class GamblersRemorseSim():
         else:
             return self.p * self.reward(state + bet) + self.p * self.reward(state - bet)
 
-    # betting is the action
+    # policy is choosing how much to bet, amounts to bet is the action space
     def bet(self):
         # get proportion of current sum to bet
         dist = 90 - self.current

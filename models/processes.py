@@ -120,10 +120,3 @@ class FiniteMarkovRewards(FiniteMarkovChain):
             return {self.states[i]: float(v[i]) for i in range(self.n)}
         return v
 
-
-class FiniteMarkovDecisionProcess(FiniteMarkovProcess):
-    def __init__(self, states: list, transition_matrix: np.array, rewards: list, initial_state=None,
-                 initial_state_dist=None):
-        super(FiniteMarkovDecisionProcess, self).__init__(states, transition_matrix, initial_state, initial_state_dist)
-
-        self.rewards = rewards
