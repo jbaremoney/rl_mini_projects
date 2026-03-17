@@ -94,9 +94,9 @@ def main():
         sigma_sensor=0.2,
         sigma_R=0.5,
         c=0.01,
-        M=1000.0,
+        M=10000.0,
         horizon=200,
-        seed=42,
+        seed=45,
         start_mu=0.5,
         return_bins=True,
     )
@@ -124,9 +124,15 @@ def main():
     print(f"Average length:   {eval_stats['avg_length']:.3f}")
     print(f"Meltdown rate:    {eval_stats['meltdown_rate']:.3%}")
 
+    print("len(training_returns):", len(training_returns))
+    print("first 10:", training_returns[:10])
+
+
     # plot learning curve
     plt.figure(figsize=(10, 5))
     plt.plot(training_returns, alpha=0.4, label="Episode return")
+
+
 
     # moving average
     window = 100

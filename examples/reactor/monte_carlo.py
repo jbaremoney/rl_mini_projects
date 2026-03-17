@@ -48,7 +48,7 @@ def mc_control(env, num_episodes, gamma=0.9, learning_rate=.9, eps=.1, Q_value_t
             ep_return += r
             state = new_state
 
-        episode_returns.append(ep_return)
+            episode_returns.append(ep_return)
 
         # first-visit MC update
         seen = set()
